@@ -1,7 +1,7 @@
 import { requireJobSeeker } from "@/lib/auth";
 import { adminCol, safeGet } from "@/lib/db-admin";
 import { DashboardShell } from "@/components/layout/DashboardShell";
-import { AnonymizedPreview } from "@/components/job-seeker/AnonymizedPreview";
+import { PreviewActions } from "./PreviewActions";
 import { ButtonLink } from "@/components/ui/Button";
 
 export default async function AnonymizedPreviewPage() {
@@ -22,12 +22,9 @@ export default async function AnonymizedPreviewPage() {
             <p>Anonymization in progress…</p>
           </div>
         ) : (
-          <AnonymizedPreview
+          <PreviewActions
             anonymizedText={resume.anonymizedText ?? ""}
             confidenceScore={resume.confidenceScore ?? 1}
-            flaggedItems={[]}
-            onApprove={() => {}}
-            onRequestReanonymization={() => {}}
           />
         )}
       </div>

@@ -8,7 +8,7 @@ export async function createSeekerAnnualCheckout(uid: string, email: string, suc
   await adminCol.stripeCustomers(uid).set({ uid, stripeCustomerId: customerId }, { merge: true });
   const session = await createCheckoutSession({
     customerId, priceId: STRIPE_PRICES.SEEKER_ANNUAL,
-    successUrl: `${successUrl}?session_id={CHECKOUT_SESSION_ID}`,
+    successUrl: `${successUrl}&session_id={CHECKOUT_SESSION_ID}`,
     cancelUrl,
     metadata: { userId: uid, type: "SEEKER_ANNUAL" },
   });
@@ -21,7 +21,7 @@ export async function createCompanyAnnualCheckout(uid: string, email: string, su
   await adminCol.stripeCustomers(uid).set({ uid, stripeCustomerId: customerId }, { merge: true });
   const session = await createCheckoutSession({
     customerId, priceId: STRIPE_PRICES.COMPANY_ANNUAL,
-    successUrl: `${successUrl}?session_id={CHECKOUT_SESSION_ID}`,
+    successUrl: `${successUrl}&session_id={CHECKOUT_SESSION_ID}`,
     cancelUrl,
     metadata: { userId: uid, type: "COMPANY_ANNUAL" },
   });
@@ -44,7 +44,7 @@ export async function createJobPostCheckout(uid: string, email: string, openPosi
       quantity: openPositions,
     }],
     mode:        "payment",
-    success_url: `${successUrl}?session_id={CHECKOUT_SESSION_ID}`,
+    success_url: `${successUrl}&session_id={CHECKOUT_SESSION_ID}`,
     cancel_url:  cancelUrl,
     metadata:    { userId: uid, type: "COMPANY_JOB_POST", jobPostId },
   });
