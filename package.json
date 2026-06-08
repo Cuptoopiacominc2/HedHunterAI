@@ -3,13 +3,12 @@
   "private": true,
   "workspaces": [
     "HedHunterAI",
-    "apps/mobile",
     "packages/*"
   ],
   "scripts": {
     "web": "npm run dev --workspace=HedHunterAI",
-    "mobile": "npm run start --workspace=apps/mobile",
-    "mobile:android": "npm run android --workspace=apps/mobile",
-    "mobile:ios": "npm run ios --workspace=apps/mobile"
+    "mobile": "cd apps/mobile && npm start",
+    "mobile:android": "cd apps/mobile && npm run android",
+    "mobile:ios": "cd apps/mobile && npm run ios"
   }
 }

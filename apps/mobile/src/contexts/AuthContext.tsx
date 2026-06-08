@@ -1,6 +1,12 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { router } from "expo-router";
-import { authApi } from "@/lib/api";
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
+import { firebaseAuth } from "@/lib/firebase";
+import { api } from "@/lib/api";
 import { clearSession, getStoredUser, saveSession, saveUser } from "@/lib/auth";
 import type { SessionPayload, UserRole } from "@hedhunter/shared";
 
@@ -8,7 +14,7 @@ interface AuthContextValue {
   user: SessionPayload | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, role: UserRole, name?: string) => Promise<void>;
+  register: (email: string, password: string, role: UserRole) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -27,26 +33,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
-    const res = await authApi.login({ email, password });
-    const { token, user: u } = res.data;
+    // 1. Authenticate with Firebase
+    const cred = await signInWithEmailAndPassword(firebaseAuth, email, password);
+    const idToken = await cred.user.getIdToken();
+
+    // 2. Exchange Firebase ID token for a signed session JWT
+    const res = await api.post("/api/auth/session", { token: idToken });
+    const { token, role } = res.data as { token: string; role: UserRole };
+
+    // 3. Persist session
+    const sessionUser: SessionPayload = { uid: cred.user.uid, email, role };
     await saveSession(token);
-    await saveUser(u);
-    setUser(u);
-    redirectByRole(u.role);
+    await saveUser(sessionUser);
+    setUser(sessionUser);
+    redirectByRole(role);
   }, []);
 
   const register = useCallback(async (
-    email: string, password: string, role: UserRole, name?: string
+    email: string, password: string, role: UserRole
   ) => {
-    const res = await authApi.register({ email, password, role, name });
-    const { token, user: u } = res.data;
+    // 1. Create Firebase account
+    const cred = await createUserWithEmailAndPassword(firebaseAuth, email, password);
+    const idToken = await cred.user.getIdToken();
+
+    // 2. Register in Firestore + get session JWT
+    const res = await api.post("/api/auth/register", { token: idToken, role });
+    const { token } = res.data as { token: string; role: UserRole };
+
+    // 3. Persist session
+    const sessionUser: SessionPayload = { uid: cred.user.uid, email, role };
     await saveSession(token);
-    await saveUser(u);
-    setUser(u);
-    redirectByRole(u.role, true);
+    await saveUser(sessionUser);
+    setUser(sessionUser);
+    redirectByRole(role, true);
   }, []);
 
   const logout = useCallback(async () => {
+    await signOut(firebaseAuth);
     await clearSession();
     setUser(null);
     router.replace("/(auth)/login");
