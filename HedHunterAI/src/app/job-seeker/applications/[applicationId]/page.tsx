@@ -63,9 +63,9 @@ export default async function ApplicationDetailPage({ params }: { params: { appl
         )}
         <div className="flex gap-3 flex-wrap">
           <ButtonLink href="/job-seeker/applications" variant="ghost" size="sm">← Back</ButtonLink>
-          {answers.length === 0 && app.status === "SUBMITTED" && (
+          {app.status === "DRAFT" && (
             <ButtonLink href={`/job-seeker/interview/${params.applicationId}`} variant="accent" size="sm">
-              Start interview →
+              {answers.length === 0 ? "Start interview →" : "Continue interview →"}
             </ButtonLink>
           )}
           {app.status === "HIRED" && (

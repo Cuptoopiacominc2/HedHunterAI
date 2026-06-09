@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
     jobSeekerId:    session.uid,
     jobPostId,
     anonymousCode:  generateApplicantCode(),
-    status:         "SUBMITTED",
+    status:         "DRAFT",
     totalScore:     null,
     aiConfidence:   null,
     requiresHumanReview:    false,

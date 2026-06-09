@@ -54,6 +54,7 @@ export async function POST(req: NextRequest) {
     await adminCol.applications(applicationId).update({
       totalScore: normalised, aiConfidence: avgConf,
       requiresHumanReview: avgConf < LIMITS.MIN_AI_CONFIDENCE,
+      status: "SUBMITTED",
       updatedAt: FieldValue.serverTimestamp(),
     });
 
