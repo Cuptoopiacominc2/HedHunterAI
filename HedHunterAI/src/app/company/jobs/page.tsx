@@ -12,8 +12,8 @@ export const metadata: Metadata = { title: "Job Posts" };
 
 export default async function CompanyJobsPage() {
   const session = await requireCompany();
-  const snap    = await safeGet(adminCol.jobPostsCol().where("companyId","==",session.uid).orderBy("createdAt","desc"));
-  const jobs    = snap.docs.map(d => ({ id: d.id, ...d.data() })) as any[];
+  const snap    = await safeGet(adminCol.jobPostsCol().where("companyId","==",session.uid));
+  const jobs    = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a:any,b:any)=>(b.createdAt?.seconds??0)-(a.createdAt?.seconds??0)) as any[];
 
   return (
     <DashboardShell role="COMPANY" title="Job Posts" subtitle={`${jobs.length} total`}

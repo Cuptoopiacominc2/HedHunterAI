@@ -10,8 +10,8 @@ export const metadata: Metadata = { title: "Applications" };
 
 export default async function ApplicationsPage() {
   const session = await requireJobSeeker();
-  const snap    = await safeGet(adminCol.applicationsCol().where("jobSeekerId","==",session.uid).orderBy("updatedAt","desc"));
-  const apps    = snap.docs.map(d => ({ id: d.id, ...d.data() })) as any[];
+  const snap    = await safeGet(adminCol.applicationsCol().where("jobSeekerId","==",session.uid));
+  const apps    = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a:any,b:any)=>(b.updatedAt?.seconds??0)-(a.updatedAt?.seconds??0)) as any[];
   const submitted = apps.filter((a:any) => a.status==="SUBMITTED").length;
   const reviewing = apps.filter((a:any) => ["REVIEWING","SHORTLISTED"].includes(a.status)).length;
   const offers    = apps.filter((a:any) => ["OFFER_SENT","HIRED"].includes(a.status)).length;

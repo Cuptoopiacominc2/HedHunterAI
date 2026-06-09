@@ -12,8 +12,11 @@ export default async function OffersPage() {
   const appIds   = appsSnap.docs.map(d => d.id);
   const offers: any[] = [];
   if (appIds.length) {
-    const offSnap = await adminCol.offersCol().where("applicationId","in",appIds.slice(0,10)).orderBy("createdAt","desc").get();
-    offers.push(...offSnap.docs.map(d => ({ id: d.id, ...d.data() })));
+    try {
+      const offSnap = await adminCol.offersCol().where("applicationId","in",appIds.slice(0,10)).get();
+      const raw = offSnap.docs.map(d => ({ id: d.id, ...d.data() })) as any[];
+      offers.push(...raw.sort((a, b) => (b.createdAt?.seconds ?? 0) - (a.createdAt?.seconds ?? 0)));
+    } catch { /* no offers yet */ }
   }
 
   return (

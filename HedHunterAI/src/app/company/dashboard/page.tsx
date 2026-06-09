@@ -12,13 +12,13 @@ export default async function CompanyDashboard() {
 
   const [profileSnap, jobsSnap] = await Promise.all([
     adminCol.companyProfiles(session.uid).get(),
-    safeGet(adminCol.jobPostsCol().where("companyId", "==", session.uid).orderBy("createdAt", "desc").limit(5)),
+    safeGet(adminCol.jobPostsCol().where("companyId", "==", session.uid).limit(20)),
   ]);
 
   const profile = profileSnap.data();
   if (!profile) return <div className="p-8 text-[#64748b]">Profile not found. Please complete onboarding.</div>;
 
-  const jobs = jobsSnap.docs.map(d => ({ id: d.id, ...d.data() })) as any[];
+  const jobs = jobsSnap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a:any,b:any)=>(b.createdAt?.seconds??0)-(a.createdAt?.seconds??0)).slice(0,5) as any[];
 
   const stats = [
     { label:"Active Jobs",      value: jobs.filter((j:any) => j.isActive).length, icon:<Briefcase size={18}/>, color:"#5b8def" },

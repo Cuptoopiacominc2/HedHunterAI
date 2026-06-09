@@ -7,8 +7,8 @@ import { Star } from "lucide-react";
 
 export default async function CompanyRatingsPage() {
   const session = await requireCompany();
-  const snap    = await safeGet(adminCol.companyRatingsCol().where("companyId", "==", session.uid).orderBy("createdAt", "desc"));
-  const ratings = snap.docs.map(d => ({ id: d.id, ...d.data() })) as any[];
+  const snap    = await safeGet(adminCol.companyRatingsCol().where("companyId", "==", session.uid));
+  const ratings = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a:any,b:any)=>(b.createdAt?.seconds??0)-(a.createdAt?.seconds??0)) as any[];
   const total   = ratings.length;
   const average = total > 0 ? ratings.reduce((s, r: any) => s + r.rating, 0) / total : 0;
   const distribution: Record<number, number> = {};
