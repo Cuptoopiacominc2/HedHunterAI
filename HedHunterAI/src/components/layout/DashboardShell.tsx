@@ -24,7 +24,7 @@ export function DashboardShell({children,role,title,subtitle,action,headerAction
           {(title||actionNode)&&(
             <div className="flex items-center justify-between px-8 py-6" style={{borderBottom:"1px solid rgba(0,0,0,.07)"}}>
               <div>
-                {title&&<h1 style={{fontFamily:"Instrument Serif,serif",fontSize:"clamp(26px,3vw,38px)",fontWeight:400,letterSpacing:"-.015em"}}>{title}</h1>}
+                {title&&<h1 style={{fontFamily:"Instrument Serif,serif",fontSize:"clamp(26px,3vw,38px)",fontWeight:400,letterSpacing:"-.015em",color:"#0f172a"}}>{title}</h1>}
                 {subtitle&&<p className="mt-1 text-sm" style={{color:"#64748b"}}>{subtitle}</p>}
               </div>
               {actionNode&&<div>{actionNode}</div>}

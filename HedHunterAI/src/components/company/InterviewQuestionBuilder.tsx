@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Textarea, Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { ComplianceFlagBadge } from "@/components/compliance/ComplianceFlagBadge";
@@ -24,6 +25,7 @@ function detectBias(text: string): boolean {
 }
 
 export function InterviewQuestionBuilder({ jobPostId, initialQuestions = [], autoGenerate = false }: InterviewQuestionBuilderProps) {
+  const router = useRouter();
   const [questions, setQuestions] = useState<Question[]>(
     initialQuestions.length ? initialQuestions : [{ order: 1, questionText: "", timeLimitSec: 120, idealAnswer: "", weight: 1.0 }]
   );
@@ -68,13 +70,21 @@ export function InterviewQuestionBuilder({ jobPostId, initialQuestions = [], aut
   }
 
   async function handleSave() {
+    if (questions.some(q => !q.questionText.trim())) {
+      setError("All questions must have text before saving.");
+      return;
+    }
     setSaving(true); setError(null);
     try {
       const res = await fetch(`/api/jobs/${jobPostId}/questions`, {
         method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ questions }),
       });
-      if (!res.ok) throw new Error("Save failed");
-      setSaved(true); setTimeout(() => setSaved(false), 3000);
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}));
+        throw new Error(d.error ?? "Save failed");
+      }
+      setSaved(true);
+      setTimeout(() => router.push("/company/jobs"), 1200);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Save failed");
     } finally {
@@ -140,7 +150,7 @@ export function InterviewQuestionBuilder({ jobPostId, initialQuestions = [], aut
 
       {error && <p className="text-xs font-mono" style={{ color: "#ff5e5e" }}>{error}</p>}
       <Button variant="accent" loading={saving} onClick={handleSave} fullWidth>
-        {saved ? "Saved ✓" : "Save all questions"}
+        {saved ? "Saved ✓ — redirecting to jobs…" : "Save all questions"}
       </Button>
     </div>
   );

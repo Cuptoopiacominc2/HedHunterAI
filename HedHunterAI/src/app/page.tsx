@@ -37,10 +37,10 @@ export default function LandingPage() {
 
           <div className="grid lg:grid-cols-[1.1fr_.9fr] gap-12 items-start">
             <div>
-              <h1 style={{ fontFamily: "Instrument Serif,serif", fontSize: "clamp(52px,8.2vw,118px)", lineHeight: .92, letterSpacing: "-.03em", fontWeight: 400, marginBottom: 28 }}>
-                Hire what&apos;s<br />
-                <span style={{ background: "#000", display: "inline-block", padding: "0 .22em", borderRadius: 3, color: "#000", position: "relative" }}>_____________</span><br />
-                <em style={{ fontStyle: "italic" }}>inside.</em>
+              <h1 style={{ fontFamily: "Instrument Serif,serif", fontSize: "clamp(42px,6.5vw,96px)", lineHeight: 1.02, letterSpacing: "-.03em", fontWeight: 400, marginBottom: 28 }}>
+                HedHunterAi —<br />
+                <em style={{ fontStyle: "italic" }}>Merit-Based</em><br />
+                Hiring Platform
               </h1>
 
               <p style={{ fontSize: 17, lineHeight: 1.55, color: "#475569", maxWidth: 540, marginBottom: 28 }}>

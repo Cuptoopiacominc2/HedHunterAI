@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { clsx } from "clsx";
 import { LayoutDashboard,Briefcase,FileText,Mic,CheckSquare,Gift,Star,Users,Building2,Settings,DollarSign,ShieldAlert,Flag,ScrollText,Search } from "lucide-react";
+import { Logo } from "@/components/ui/Logo";
 import type { UserRole } from "@/types/user";
 
 type NavItem = { href:string; label:string; icon:React.ReactNode; count?:number };
@@ -42,6 +43,9 @@ export function Sidebar({role}:{role:UserRole}) {
 
   return (
     <aside className="w-56 flex-none flex flex-col gap-1 py-6 px-4" style={{borderRight:"1px solid rgba(0,0,0,.07)",background:"rgba(255,255,255,.01)"}}>
+      <div className="flex justify-center mb-4 pb-4" style={{borderBottom:"1px solid rgba(0,0,0,.07)"}}>
+        <Logo height={44} href="/" />
+      </div>
       {nav.map(item=>{
         const active = path===item.href || (item.href!=="/" && path.startsWith(item.href));
         return (

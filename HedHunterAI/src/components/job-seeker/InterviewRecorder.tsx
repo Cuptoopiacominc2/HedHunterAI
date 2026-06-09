@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/Button";
 import { useInterviewRecorder } from "@/hooks/useInterviewRecorder";
 import { Mic, Square, Play, Send } from "lucide-react";
@@ -17,22 +17,39 @@ export function InterviewRecorder({ question, applicationId, questionId, hasAcco
   const [timeLeft, setTimeLeft]     = useState(question.timeLimitSec);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError]           = useState<string | null>(null);
+  const timedOut                    = useRef(false);
 
+  // Reset timer when question changes
+  useEffect(() => {
+    setTimeLeft(question.timeLimitSec);
+    timedOut.current = false;
+  }, [question.timeLimitSec, questionId]);
+
+  // Countdown timer — auto-stop when time expires
   useEffect(() => {
     if (!isRecording) return;
     if (hasAccommodation) return;
     const t = setInterval(() => {
       setTimeLeft(p => {
-        if (p <= 1) { stop(); clearInterval(t); return 0; }
+        if (p <= 1) {
+          timedOut.current = true;
+          stop();
+          clearInterval(t);
+          return 0;
+        }
         return p - 1;
       });
     }, 1000);
     return () => clearInterval(t);
   }, [isRecording, hasAccommodation, stop]);
 
+  // Auto-submit when recording stops due to timer expiry
   useEffect(() => {
-    if (isRecording) setTimeLeft(question.timeLimitSec);
-  }, [isRecording, question.timeLimitSec]);
+    if (timedOut.current && audioBlob && !submitting) {
+      void handleSubmit();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [audioBlob]);
 
   async function handleSubmit() {
     if (!audioBlob) return;
@@ -48,6 +65,7 @@ export function InterviewRecorder({ question, applicationId, questionId, hasAcco
       onComplete(answerId);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Submission failed");
+      timedOut.current = false;
     } finally {
       setSubmitting(false);
     }
@@ -83,7 +101,13 @@ export function InterviewRecorder({ question, applicationId, questionId, hasAcco
 
       {!isRecording && audioBlob && (
         <div className="p-3 rounded-xl text-sm" style={{ background: "rgba(61,220,151,.07)", border: "1px solid rgba(61,220,151,.2)", color: "#3ddc97" }}>
-          Recording complete · {duration}s recorded
+          {submitting ? "Submitting answer…" : `Recording complete · ${duration}s recorded`}
+        </div>
+      )}
+
+      {timeLeft === 0 && !audioBlob && !isRecording && (
+        <div className="p-3 rounded-xl text-sm" style={{ background: "rgba(245,165,36,.07)", border: "1px solid rgba(245,165,36,.25)", color: "#f5a524" }}>
+          Time expired — no recording captured.
         </div>
       )}
 
@@ -100,7 +124,7 @@ export function InterviewRecorder({ question, applicationId, questionId, hasAcco
             <Square size={14}/> Stop recording
           </Button>
         )}
-        {!isRecording && audioBlob && (
+        {!isRecording && audioBlob && !submitting && (
           <>
             <Button variant="ghost" onClick={reset}><Play size={14}/> Re-record</Button>
             <Button variant="accent" loading={submitting} onClick={handleSubmit} fullWidth>

@@ -22,7 +22,7 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50" style={{backdropFilter:"blur(18px)",background:"rgba(255,255,255,.92)",borderBottom:"1px solid rgba(0,0,0,.07)"}}>
       <div className="max-w-6xl mx-auto px-6 flex items-center justify-between py-3.5">
-        <Logo height={36} href="/" />
+        <Logo height={48} href="/" />
 
         {isPublic && (
           <nav className="hidden md:flex gap-7">

@@ -38,6 +38,7 @@ export function JobPostForm({ initialData, onSubmit, submitLabel = "Create job p
     isRemote:                 (initialData?.isRemote                 as boolean) ?? false,
     isHybrid:                 (initialData?.isHybrid                 as boolean) ?? false,
     isOffice:                 (initialData?.isOffice                 as boolean) ?? false,
+    isOnLocation:             (initialData?.isOnLocation             as boolean) ?? false,
     salaryMin:                (initialData?.salaryMin  != null ? String(initialData.salaryMin)  : ""),
     salaryMax:                (initialData?.salaryMax  != null ? String(initialData.salaryMax)  : ""),
     openPositions:            (initialData?.openPositions            as number)  ?? 1,
@@ -104,12 +105,12 @@ export function JobPostForm({ initialData, onSubmit, submitLabel = "Create job p
       <div>
         <p className="font-mono text-[10.5px] tracking-[.16em] uppercase mb-2" style={{ color: "#64748b" }}>Work type</p>
         <div className="flex gap-6">
-          {(["isRemote","isHybrid","isOffice"] as const).map((key) => (
+          {(["isRemote","isHybrid","isOffice","isOnLocation"] as const).map((key) => (
             <label key={key} className="flex items-center gap-2 cursor-pointer text-sm" style={{ color: "#475569" }}>
               <input type="checkbox" checked={form[key]}
                 onChange={e => setForm(p => ({ ...p, [key]: e.target.checked }))}
                 className="accent-[#3ce8ff]" />
-              {key === "isRemote" ? "Remote" : key === "isHybrid" ? "Hybrid" : "Office"}
+              {key === "isRemote" ? "Remote" : key === "isHybrid" ? "Hybrid" : key === "isOffice" ? "Office" : "On Location"}
             </label>
           ))}
         </div>

@@ -30,6 +30,7 @@ export const jobPostSchema = z.object({
   isRemote:                z.boolean().default(false),
   isHybrid:                z.boolean().default(false),
   isOffice:                z.boolean().default(false),
+  isOnLocation:            z.boolean().default(false),
   openPositions:           z.number().int().min(1).max(50),
 });
 
