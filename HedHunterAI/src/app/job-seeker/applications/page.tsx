@@ -11,7 +11,20 @@ export const metadata: Metadata = { title: "Applications" };
 export default async function ApplicationsPage() {
   const session = await requireJobSeeker();
   const snap    = await safeGet(adminCol.applicationsCol().where("jobSeekerId","==",session.uid));
-  const apps    = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a:any,b:any)=>(b.updatedAt?.seconds??0)-(a.updatedAt?.seconds??0)) as any[];
+  const raw     = snap.docs.map(d => ({ id: d.id, ...d.data() })) as any[];
+
+  // Enrich with job title + company name (avoids composite index, avoids undefined jobPost crash)
+  const apps = await Promise.all(raw.map(async (a: any) => {
+    try {
+      const jobSnap  = await adminCol.jobPosts(a.jobPostId).get();
+      const job      = jobSnap.data();
+      const compSnap = job?.companyId ? await adminCol.companyProfiles(job.companyId).get() : null;
+      return { ...a, jobTitle: job?.title ?? "Position", companyName: compSnap?.data()?.name ?? "" };
+    } catch { return { ...a, jobTitle: "Position", companyName: "" }; }
+  }));
+
+  apps.sort((a:any,b:any)=>(b.updatedAt?.seconds??0)-(a.updatedAt?.seconds??0));
+
   const submitted = apps.filter((a:any) => a.status==="SUBMITTED").length;
   const reviewing = apps.filter((a:any) => ["REVIEWING","SHORTLISTED"].includes(a.status)).length;
   const offers    = apps.filter((a:any) => ["OFFER_SENT","HIRED"].includes(a.status)).length;
