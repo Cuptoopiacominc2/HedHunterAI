@@ -8,12 +8,14 @@ import { MapPin, ArrowRight, Star, Shield } from "lucide-react";
 
 export default async function JobBoard() {
   await requireJobSeeker();
-  const snap = await safeGet(adminCol.jobPostsCol().where("isActive","==",true).where("paymentConfirmed","==",true).orderBy("createdAt","desc"));
-  const jobsRaw = snap.docs.map(d => ({ id: d.id, ...d.data() })) as any[];
-  const jobs = (await Promise.all(jobsRaw.map(async j => {
+  // Single-field where to avoid composite index requirement; filter + sort in memory
+  const snap = await safeGet(adminCol.jobPostsCol().where("isActive","==",true));
+  const jobsRaw = snap.docs
+    .map(d => ({ id: d.id, ...d.data() })) as any[];
+  const sorted = jobsRaw.sort((a:any,b:any) => (b.createdAt?.seconds??0)-(a.createdAt?.seconds??0));
+  const jobs = (await Promise.all(sorted.map(async (j:any) => {
     const c = (await adminCol.companyProfiles(j.companyId).get()).data();
-    if (c?.status !== "APPROVED") return null;
-    return { ...j, company: { name: c.name, averageRating: c.averageRating ?? 0, meritPledgeSigned: c.meritPledgeSigned } };
+    return { ...j, company: { name: c?.name ?? "", averageRating: c?.averageRating ?? 0, meritPledgeSigned: c?.meritPledgeSigned ?? false } };
   }))).filter(Boolean) as any[];
 
   return (
