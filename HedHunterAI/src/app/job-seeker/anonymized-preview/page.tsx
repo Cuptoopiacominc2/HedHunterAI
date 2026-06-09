@@ -6,8 +6,10 @@ import { ButtonLink } from "@/components/ui/Button";
 
 export default async function AnonymizedPreviewPage() {
   const session = await requireJobSeeker();
-  const snap    = await safeGet(adminCol.resumeDocumentsCol().where("jobSeekerId","==",session.uid).orderBy("createdAt","desc").limit(1));
-  const resume  = snap.empty ? null : { id: snap.docs[0].id, ...snap.docs[0].data() } as any;
+  // No orderBy to avoid composite index requirement — sort in memory
+  const snap    = await safeGet(adminCol.resumeDocumentsCol().where("jobSeekerId","==",session.uid).limit(20));
+  const sorted  = snap.docs.sort((a, b) => (b.data().createdAt?.seconds ?? 0) - (a.data().createdAt?.seconds ?? 0));
+  const resume  = sorted.length === 0 ? null : { id: sorted[0].id, ...sorted[0].data() } as any;
 
   return (
     <DashboardShell role="JOB_SEEKER" title="Anonymized preview" subtitle="This is what employers see">

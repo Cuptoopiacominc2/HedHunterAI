@@ -11,7 +11,7 @@ export const metadata: Metadata = { title: "Resume Upload" };
 
 export default async function ResumeUploadPage() {
   const session = await requireJobSeeker();
-  const snap    = await safeGet(adminCol.resumeDocumentsCol().where("jobSeekerId","==",session.uid).orderBy("createdAt","desc").limit(5));
+  const snap    = await safeGet(adminCol.resumeDocumentsCol().where("jobSeekerId","==",session.uid).limit(10));
   const resumes = snap.docs.map(d => ({ id: d.id, ...d.data() })) as any[];
 
   return (
