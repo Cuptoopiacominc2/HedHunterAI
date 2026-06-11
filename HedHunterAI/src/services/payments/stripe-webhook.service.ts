@@ -19,15 +19,15 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promis
   const { userId, type, jobPostId } = session.metadata ?? {};
   if (!userId || !type) return;
 
-  const snap = await adminCol.paymentsCol()
+  const rawSnap = await adminCol.paymentsCol()
     .where("userId", "==", userId)
     .where("type", "==", type)
     .where("status", "==", "PENDING")
-    .orderBy("createdAt", "desc").limit(1).get();
-
-  if (snap.empty) return;
-  const paymentRef = snap.docs[0].ref;
-  const paymentId  = snap.docs[0].id;
+    .get();
+  if (rawSnap.empty) return;
+  const sorted     = rawSnap.docs.sort((a, b) => (b.data().createdAt?.seconds ?? 0) - (a.data().createdAt?.seconds ?? 0));
+  const paymentRef = sorted[0].ref;
+  const paymentId  = sorted[0].id;
 
   await paymentRef.update({ status: "COMPLETED", stripePaymentId: session.payment_intent as string });
 
@@ -42,7 +42,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promis
   const userSnap = await adminCol.users(userId).get();
   const email    = userSnap.data()?.email;
   if (email) {
-    const amount = snap.docs[0].data().amountCents;
+    const amount = sorted[0].data().amountCents;
     await logPayment({ userId, paymentId, amount, type });
     await sendPaymentReceiptEmail(email, { amount, type, date: formatDate(new Date()) });
   }

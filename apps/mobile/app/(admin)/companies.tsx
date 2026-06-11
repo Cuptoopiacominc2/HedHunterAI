@@ -14,7 +14,7 @@ export default function AdminCompaniesScreen() {
   const [loading, setLoading]     = useState(true);
 
   useEffect(() => {
-    adminApi.getStats()
+    adminApi.getFull()
       .then(r => setCompanies(r.data.companies ?? []))
       .catch(() => {})
       .finally(() => setLoading(false));

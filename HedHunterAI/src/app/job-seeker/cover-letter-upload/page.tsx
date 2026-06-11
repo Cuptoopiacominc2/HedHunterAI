@@ -11,8 +11,10 @@ export const metadata: Metadata = { title: "Cover Letter Upload" };
 
 export default async function CoverLetterUploadPage() {
   const session = await requireJobSeeker();
-  const snap    = await safeGet(adminCol.coverLetterDocumentsCol().where("jobSeekerId","==",session.uid).orderBy("createdAt","desc").limit(5));
-  const coverLetters = snap.docs.map(d => ({ id: d.id, ...d.data() })) as any[];
+  const snap    = await safeGet(adminCol.coverLetterDocumentsCol().where("jobSeekerId","==",session.uid).limit(5));
+  const coverLetters = snap.docs
+    .map(d => ({ id: d.id, ...d.data() }))
+    .sort((a: any, b: any) => (b.createdAt?.seconds ?? 0) - (a.createdAt?.seconds ?? 0)) as any[];
 
   return (
     <DashboardShell role="JOB_SEEKER" title="Cover Letter" subtitle="Optional — upload and anonymize">

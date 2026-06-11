@@ -29,9 +29,12 @@
         "backgroundColor": "#060d1a"
       },
       "package": "ai.hedhunter.app",
+      "googleServicesFile": "./google-services.json",
       "permissions": [
         "RECORD_AUDIO",
-        "READ_EXTERNAL_STORAGE"
+        "READ_EXTERNAL_STORAGE",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS"
       ]
     },
     "plugins": [
@@ -57,16 +60,21 @@
         }
       ]
     ],
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "experiments": {
       "typedRoutes": true
     },
     "scheme": "hedhunter",
     "extra": {
       "apiUrl": "https://www.hedhunterai.com",
+      "router": {},
       "eas": {
-        "projectId": "YOUR_EAS_PROJECT_ID"
+        "projectId": "6794e140-ac4b-4c3e-806e-e0f9539e0dec"
       }
-    }
+    },
+    "owner": "emmy123222"
   }
 }

@@ -28,10 +28,15 @@ export default function JobDetailScreen() {
     setApplying(true);
     try {
       const res = await applicationsApi.apply({ jobPostId: jobId });
-      const applicationId = res.data.application.id;
-      router.push(`/(job-seeker)/interview/${applicationId}` as never);
+      const applicationId = res.data.id;
+      router.push(`/(job-seeker)/applications/${applicationId}` as never);
     } catch (e: any) {
-      Alert.alert("Could not apply", e?.response?.data?.error ?? "Please try again.");
+      const msg = e?.response?.data?.error ?? "Please try again.";
+      if (msg === "Already applied") {
+        Alert.alert("Already applied", "You have already applied for this position.");
+      } else {
+        Alert.alert("Could not apply", msg);
+      }
     } finally {
       setApplying(false);
     }
@@ -73,8 +78,10 @@ export default function JobDetailScreen() {
             </View>
           </View>
           <View className="flex-row gap-2 flex-wrap">
-            {job.isRemote && <View className="bg-cyan-500/10 border border-cyan-500/30 rounded-full px-2.5 py-1"><Text className="text-cyan-300 text-xs">Remote</Text></View>}
-            {job.isHybrid && <View className="bg-blue-500/10 border border-blue-500/30 rounded-full px-2.5 py-1"><Text className="text-blue-300 text-xs">Hybrid</Text></View>}
+            {job.isRemote     && <View className="bg-cyan-500/10 border border-cyan-500/30 rounded-full px-2.5 py-1"><Text className="text-cyan-300 text-xs">Remote</Text></View>}
+            {job.isHybrid     && <View className="bg-blue-500/10 border border-blue-500/30 rounded-full px-2.5 py-1"><Text className="text-blue-300 text-xs">Hybrid</Text></View>}
+            {(job as any).isOnLocation && <View className="bg-purple-500/10 border border-purple-500/30 rounded-full px-2.5 py-1"><Text className="text-purple-300 text-xs">On Location</Text></View>}
+            {job.isOffice     && <View className="bg-orange-500/10 border border-orange-500/30 rounded-full px-2.5 py-1"><Text className="text-orange-300 text-xs">Office</Text></View>}
           </View>
           <View className="flex-row items-center gap-2 pt-2 border-t border-border">
             <Ionicons name="cash-outline" size={16} color="#3ce8ff" />

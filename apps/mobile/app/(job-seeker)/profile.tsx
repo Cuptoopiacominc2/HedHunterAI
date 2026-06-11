@@ -50,6 +50,25 @@ export default function SeekerProfileScreen() {
         ))}
       </Card>
 
+      {/* Legal */}
+      <Card className="p-0 overflow-hidden mb-4">
+        {[
+          { icon: "shield-checkmark-outline", label: "Privacy Policy", href: "/legal/privacy" },
+          { icon: "document-text-outline",    label: "Terms of Service", href: "/legal/terms" },
+        ].map((item, i) => (
+          <Pressable
+            key={item.href}
+            onPress={() => router.push(item.href as never)}
+            className="flex-row items-center gap-3 px-4 py-3.5 active:bg-white/5"
+            style={i > 0 ? { borderTopWidth: 1, borderTopColor: "rgba(255,255,255,0.07)" } : {}}
+          >
+            <Ionicons name={item.icon as any} size={20} color="#7e8aa3" />
+            <Text className="text-subtle flex-1">{item.label}</Text>
+            <Ionicons name="chevron-forward" size={16} color="#7e8aa3" />
+          </Pressable>
+        ))}
+      </Card>
+
       {/* Logout */}
       <Card className="p-0 overflow-hidden">
         <Pressable onPress={logout} className="flex-row items-center gap-3 px-4 py-3.5 active:bg-red-500/10">

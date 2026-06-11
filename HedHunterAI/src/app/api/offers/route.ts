@@ -11,8 +11,10 @@ export async function GET() {
     const appsSnap = await adminCol.applicationsCol().where("jobSeekerId", "==", session.uid).get();
     const appIds   = appsSnap.docs.map(d => d.id);
     if (!appIds.length) return NextResponse.json([]);
-    const snap = await adminCol.offersCol().where("applicationId", "in", appIds.slice(0, 10)).orderBy("createdAt", "desc").get();
-    return NextResponse.json(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    const snap  = await adminCol.offersCol().where("applicationId", "in", appIds.slice(0, 10)).get();
+    const offers = snap.docs.map(d => ({ id: d.id, ...d.data() })) as any[];
+    offers.sort((a, b) => (b.createdAt?.seconds ?? 0) - (a.createdAt?.seconds ?? 0));
+    return NextResponse.json(offers);
   }
 
   if (session.role === "COMPANY") {

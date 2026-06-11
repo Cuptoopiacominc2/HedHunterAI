@@ -15,7 +15,7 @@ export default function AdminUsersScreen() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    adminApi.getStats()
+    adminApi.getFull()
       .then(r => setUsers(r.data.users ?? []))
       .catch(() => {})
       .finally(() => setLoading(false));

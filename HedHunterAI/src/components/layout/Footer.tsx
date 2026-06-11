@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
 
 const COLS = [
-  {h:"Platform",links:[{l:"How it works",h:"/#how"},{l:"Guardrails",h:"/#guardrails"},{l:"Merit Pledge",h:"/merit-based-hiring"},{l:"Pricing",h:"/pricing"}]},
+  {h:"Platform",links:[{l:"How it works",h:"/how-it-works"},{l:"Guardrails",h:"/how-it-works#guardrails"},{l:"Merit Pledge",h:"/merit-based-hiring"},{l:"Pricing",h:"/pricing"}]},
   {h:"Seekers",links:[{l:"Apply anonymously",h:"/signup/job-seeker"},{l:"Accommodation",h:"/job-seeker/onboarding"},{l:"Appeals",h:"/job-seeker/applications"},{l:"Status",h:"/job-seeker/applications"}]},
   {h:"Companies",links:[{l:"Verify company",h:"/signup/company"},{l:"Post a role",h:"/company/jobs/create"},{l:"Question builder",h:"/company/jobs"},{l:"Ratings",h:"/company/ratings"}]},
   {h:"Legal",links:[{l:"Privacy policy",h:"/privacy"},{l:"Terms of service",h:"/terms"},{l:"AI disclosure",h:"/ai-hiring-disclosure"},{l:"EEOC compliance",h:"/merit-based-hiring"}]},

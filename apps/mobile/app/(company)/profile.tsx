@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Alert, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Pressable, Text, View } from "react-native";
+import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { Screen } from "@/components/ui/Screen";
 import { Card } from "@/components/ui/Card";
@@ -8,9 +9,11 @@ import { Button } from "@/components/ui/Button";
 import { Header } from "@/components/layout/Header";
 import { MonoText } from "@/components/ui/MonoText";
 import { companyApi } from "@/lib/api";
+import { useAuth } from "@/contexts/AuthContext";
 import type { CompanyProfile } from "@hedhunter/shared";
 
 export default function CompanyProfileScreen() {
+  const { logout } = useAuth();
   const [profile, setProfile] = useState<Partial<CompanyProfile>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving]   = useState(false);
@@ -88,6 +91,33 @@ export default function CompanyProfileScreen() {
         )}
 
         <Button onPress={save} loading={saving} fullWidth size="lg">Save profile</Button>
+
+        {/* Legal */}
+        <Card className="p-0 overflow-hidden">
+          {[
+            { icon: "shield-checkmark-outline", label: "Privacy Policy",   href: "/legal/privacy" },
+            { icon: "document-text-outline",    label: "Terms of Service", href: "/legal/terms"   },
+          ].map((item, i) => (
+            <Pressable
+              key={item.href}
+              onPress={() => router.push(item.href as never)}
+              className="flex-row items-center gap-3 px-4 py-3.5 active:bg-white/5"
+              style={i > 0 ? { borderTopWidth: 1, borderTopColor: "rgba(255,255,255,0.07)" } : {}}
+            >
+              <Ionicons name={item.icon as any} size={20} color="#7e8aa3" />
+              <Text className="text-subtle flex-1">{item.label}</Text>
+              <Ionicons name="chevron-forward" size={16} color="#7e8aa3" />
+            </Pressable>
+          ))}
+        </Card>
+
+        {/* Sign out */}
+        <Card className="p-0 overflow-hidden">
+          <Pressable onPress={logout} className="flex-row items-center gap-3 px-4 py-3.5 active:bg-red-500/10">
+            <Ionicons name="log-out-outline" size={20} color="#f87171" />
+            <Text className="text-red-400 flex-1">Sign out</Text>
+          </Pressable>
+        </Card>
       </View>
     </Screen>
   );

@@ -7,8 +7,10 @@ import { createAuditLog } from "@/lib/audit-log";
 export async function GET(req: NextRequest) {
   const companyId = new URL(req.url).searchParams.get("companyId");
   if (!companyId) return NextResponse.json({ error: "companyId required" }, { status: 400 });
-  const snap = await adminCol.companyRatingsCol().where("companyId", "==", companyId).where("isVisible", "==", true).orderBy("createdAt", "desc").limit(50).get();
-  return NextResponse.json(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+  const snap    = await adminCol.companyRatingsCol().where("companyId", "==", companyId).where("isVisible", "==", true).get();
+  const ratings = snap.docs.map(d => ({ id: d.id, ...d.data() })) as any[];
+  ratings.sort((a, b) => (b.createdAt?.seconds ?? 0) - (a.createdAt?.seconds ?? 0));
+  return NextResponse.json(ratings.slice(0, 50));
 }
 
 export async function POST(req: NextRequest) {

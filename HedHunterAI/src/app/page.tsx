@@ -28,9 +28,7 @@ export default function LandingPage() {
       <section className="relative z-10 pt-20 pb-12" style={{ background: "radial-gradient(1100px 500px at 80% -10%,rgba(91,141,239,.13),transparent 60%),radial-gradient(800px 400px at -5% 35%,rgba(60,232,255,.07),transparent 60%)" }}>
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex items-center gap-3 mb-7">
-            <Dot /><MonoLabel>FILE // HH-AI // CASE #4827</MonoLabel>
-            <span className="flex-1 h-px bg-white/[.07]" />
-            <MonoLabel>EST. 2026</MonoLabel>
+            <Dot /><MonoLabel>EST. 2026</MonoLabel>
             <span className="flex-1 h-px bg-white/[.07]" />
             <MonoLabel>IDENTITY LAYER :: ACTIVE</MonoLabel>
           </div>
@@ -117,21 +115,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Trust strip */}
-      <div className="relative z-10">
-        <div className="max-w-6xl mx-auto px-6 py-6" style={{ borderTop: "1px solid rgba(0,0,0,.07)", borderBottom: "1px solid rgba(0,0,0,.07)" }}>
-          <div className="flex flex-wrap items-center justify-between gap-6">
-            <MonoLabel>Built for Title VII, EEOC, EU AI Act, NYC LL 144, GDPR.</MonoLabel>
-            <div className="flex flex-wrap gap-8 opacity-80">
-              {["Title VII","EEOC","EU AI Act","NYC LL 144","GDPR","SOC 2"].map(m=>(
-                <span key={m} className="flex items-center gap-2" style={{ fontFamily: "Instrument Serif,serif", fontSize: 18, color: "#475569" }}>
-                  <span className="inline-block rounded-full w-1.5 h-1.5" style={{ background: "#475569" }} />{m}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
 
       <Footer />
     </div>

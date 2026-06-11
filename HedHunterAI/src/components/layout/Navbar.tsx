@@ -7,9 +7,9 @@ import { useRole } from "@/hooks/useRole";
 import { Logo } from "@/components/ui/Logo";
 
 const PUBLIC_LINKS = [
-  {href:"/#how",        label:"How it works"},
-  {href:"/#guardrails", label:"Guardrails"},
-  {href:"/pricing",     label:"Pricing"},
+  {href:"/how-it-works", label:"How it works"},
+  {href:"/how-it-works#guardrails", label:"Guardrails"},
+  {href:"/pricing",      label:"Pricing"},
   {href:"/merit-based-hiring", label:"Merit Pledge"},
 ];
 

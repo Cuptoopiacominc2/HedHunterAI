@@ -8,17 +8,16 @@ interface LogoProps {
 }
 
 export function Logo({ height = 36, href = "/", className }: LogoProps) {
-  const width = Math.round(height * 1.5); // 3:2 native ratio
-
   const img = (
     <Image
-      src="/logo.png"
+      src="/HedHunhterAi 1.png"
       alt="Hed Hunter AI"
-      width={width}
+      width={0}
       height={height}
+      sizes="300px"
       priority
       className={className}
-      style={{ objectFit: "contain" }}
+      style={{ width: "auto", height: height, objectFit: "contain" }}
     />
   );
 

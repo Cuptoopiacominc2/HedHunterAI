@@ -10,13 +10,12 @@ export async function GET(req: NextRequest) {
   const page     = parseInt(searchParams.get("page") ?? "1");
   const limit    = Math.min(parseInt(searchParams.get("limit") ?? "20"), 50);
 
-  let q = adminCol.jobPostsCol()
+  const snap = await adminCol.jobPostsCol()
     .where("isActive", "==", true)
     .where("paymentConfirmed", "==", true)
-    .orderBy("createdAt", "desc");
-
-  const snap  = await q.get();
-  let jobs    = snap.docs.map(d => ({ id: d.id, ...d.data() })) as any[];
+    .get();
+  let jobs = snap.docs.map(d => ({ id: d.id, ...d.data() })) as any[];
+  jobs.sort((a, b) => (b.createdAt?.seconds ?? 0) - (a.createdAt?.seconds ?? 0));
 
   if (search)           jobs = jobs.filter((j: any) => j.title?.toLowerCase().includes(search));
   if (isRemote === "true") jobs = jobs.filter((j: any) => j.isRemote);

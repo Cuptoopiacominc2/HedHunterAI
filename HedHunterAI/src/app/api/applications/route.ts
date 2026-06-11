@@ -10,20 +10,23 @@ export async function GET() {
   const { uid, role } = session;
 
   if (role === "JOB_SEEKER") {
-    const snap = await adminCol.applicationsCol().where("jobSeekerId", "==", uid).orderBy("updatedAt", "desc").get();
-    return NextResponse.json(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    const snap = await adminCol.applicationsCol().where("jobSeekerId", "==", uid).get();
+    const apps = snap.docs.map(d => ({ id: d.id, ...d.data() })) as any[];
+    apps.sort((a, b) => (b.updatedAt?.seconds ?? 0) - (a.updatedAt?.seconds ?? 0));
+    return NextResponse.json(apps);
   }
 
   if (role === "COMPANY") {
-    // Get all jobPost IDs for this company
     const jobsSnap = await adminCol.jobPostsCol().where("companyId", "==", uid).get();
     const jobIds   = jobsSnap.docs.map(d => d.id);
     if (!jobIds.length) return NextResponse.json([]);
-    const snap = await adminCol.applicationsCol().where("jobPostId", "in", jobIds.slice(0, 10)).orderBy("totalScore", "desc").get();
-    return NextResponse.json(snap.docs.map(d => {
+    const snap = await adminCol.applicationsCol().where("jobPostId", "in", jobIds.slice(0, 10)).get();
+    const apps = snap.docs.map(d => {
       const d2 = d.data();
       return { id: d.id, anonymousCode: d2.anonymousCode, status: d2.status, totalScore: d2.totalScore, aiConfidence: d2.aiConfidence, requiresHumanReview: d2.requiresHumanReview, createdAt: d2.createdAt, jobPostId: d2.jobPostId };
-    }));
+    }) as any[];
+    apps.sort((a, b) => (b.totalScore ?? -1) - (a.totalScore ?? -1));
+    return NextResponse.json(apps);
   }
 
   if (role === "ADMIN") {

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "894540718247",
+    "project_id": "hedhunterai",
+    "storage_bucket": "hedhunterai.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:894540718247:android:71abc028334d05ee8fbb82",
+        "android_client_info": {
+          "package_name": "ai.hedhunter.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "894540718247-rsbeag5b7b4hplq6vpjkgijq9mbe9q3a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCozJy8g0ge4AFpgtI_hBlbsojpL6Gl-o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "894540718247-rsbeag5b7b4hplq6vpjkgijq9mbe9q3a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

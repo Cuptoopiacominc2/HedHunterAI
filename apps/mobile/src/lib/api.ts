@@ -110,8 +110,11 @@ export const stripeApi = {
 
 // ─── Admin ────────────────────────────────────────────────────────────────────
 export const adminApi = {
-  getStats: () => api.get("/api/admin"),
-  updateUser: (body: unknown) => api.patch("/api/admin", body),
+  getStats:      () => api.get("/api/admin"),
+  getFull:       () => api.get("/api/admin?type=full"),
+  getJobSeekers: () => api.get("/api/admin?type=seekers"),
+  getJobs:       () => api.get("/api/admin?type=jobs"),
+  updateUser:    (body: unknown) => api.patch("/api/admin", body),
 };
 
 // ─── Anonymize ────────────────────────────────────────────────────────────────

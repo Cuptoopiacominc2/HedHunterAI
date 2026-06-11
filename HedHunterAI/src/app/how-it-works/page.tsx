@@ -27,8 +27,9 @@ export default function HowItWorksPage() {
         </p>
       </div>
       <HowItWorks />
-      <section className="relative z-10 pb-24 px-6">
+      <section id="guardrails" className="relative z-10 pb-24 px-6 scroll-mt-24">
         <div className="max-w-4xl mx-auto">
+          <p style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 10.5, letterSpacing: ".18em", textTransform: "uppercase", color: "#3ce8ff", textAlign: "center", marginBottom: 8 }}>Guardrails</p>
           <h2 style={{ fontFamily: "Instrument Serif,serif", fontSize: "clamp(24px,4vw,36px)", fontWeight: 400, marginBottom: 16, textAlign: "center" }}>
             Built-in compliance guardrails
           </h2>

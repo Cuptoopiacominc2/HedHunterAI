@@ -8,7 +8,8 @@ import { FlaggedQuestionTable } from "@/components/admin/FlaggedQuestionTable";
 export default async function FlaggedQuestionsPage() {
   await requireAdmin();
 
-  const snap    = await safeGet(adminCol.complianceFlagsCol().where("isResolved", "==", false).orderBy("createdAt", "asc").limit(100));
+  const rawSnap = await safeGet(adminCol.complianceFlagsCol().where("isResolved", "==", false).limit(100));
+  const snap    = { docs: [...rawSnap.docs].sort((a, b) => (a.data().createdAt?.seconds ?? 0) - (b.data().createdAt?.seconds ?? 0)) };
   const questions = await Promise.all(snap.docs.map(async d => {
     const f       = d.data();
     const jobSnap = await adminCol.jobPosts(f.jobPostId).get();

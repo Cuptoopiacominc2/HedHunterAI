@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { Screen } from "@/components/ui/Screen";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 import { Header } from "@/components/layout/Header";
 import { MonoText } from "@/components/ui/MonoText";
 import { applicationsApi } from "@/lib/api";
@@ -119,6 +120,29 @@ export default function ApplicationDetailScreen() {
         )}
 
         <MonoText className="text-center">{app.anonymousCode}</MonoText>
+
+        {/* Start / continue interview for DRAFT applications */}
+        {app.status === "DRAFT" && (
+          <Button
+            variant="primary"
+            size="lg"
+            fullWidth
+            onPress={() => router.push(`/(job-seeker)/interview/${applicationId}` as never)}
+          >
+            {app.aiScores && app.aiScores.length > 0 ? "Continue interview →" : "Start interview →"}
+          </Button>
+        )}
+
+        {/* Rate company after hire */}
+        {app.status === "HIRED" && (
+          <Button
+            variant="secondary"
+            fullWidth
+            onPress={() => router.push(`/(job-seeker)/rate-company/${(app as any).jobPost?.companyId}` as never)}
+          >
+            Rate this company →
+          </Button>
+        )}
       </View>
     </Screen>
   );

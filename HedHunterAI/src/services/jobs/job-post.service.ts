@@ -31,7 +31,8 @@ export async function getJobPostWithDetails(id: string) {
 }
 
 export async function getCompanyJobs(companyId: string) {
-  const snap = await adminCol.jobPostsCol().where("companyId", "==", companyId).orderBy("createdAt", "desc").get();
+  const rawSnap = await adminCol.jobPostsCol().where("companyId", "==", companyId).get();
+  const snap    = { docs: [...rawSnap.docs].sort((a, b) => (b.data().createdAt?.seconds ?? 0) - (a.data().createdAt?.seconds ?? 0)) };
   return Promise.all(snap.docs.map(async d => {
     const qSnap  = await adminCol.jobQuestions(d.id).get();
     const aSnap  = await adminCol.applicationsCol().where("jobPostId", "==", d.id).get();
